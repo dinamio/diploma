@@ -21,12 +21,12 @@ public class StudentController {
     }
 
     @PostMapping
-    public Student create(Student student) {
+    public Student create(@RequestBody Student student) {
         return studentRepository.save(student);
     }
 
     @PutMapping
-    public Student update(Student student) {
+    public Student update(@RequestBody Student student) {
         return studentRepository.save(student);
     }
 
