@@ -12,13 +12,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final CustomUserDetailService customUserDetailService;
+
     @Autowired
-    private CustomUserDetailService customUserDetailService;
+    public SecurityConfig(CustomUserDetailService customUserDetailService) {
+        this.customUserDetailService = customUserDetailService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/student").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/**").hasAnyRole("ADMIN")
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), customUserDetailService));
