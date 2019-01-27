@@ -19,7 +19,7 @@ import static com.university.contractors.config.SecurityConstants.*;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final CustomUserDetailService customUserDetailService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, CustomUserDetailService customUserDetailService) {
+    JwtAuthorizationFilter(AuthenticationManager authenticationManager, CustomUserDetailService customUserDetailService) {
         super(authenticationManager);
         this.customUserDetailService = customUserDetailService;
     }

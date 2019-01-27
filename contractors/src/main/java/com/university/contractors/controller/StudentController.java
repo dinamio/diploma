@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController(value = "/students")
 public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentRepository studentRepository; // todo add service layer
 
     @Autowired
     public StudentController(StudentRepository studentRepository) {

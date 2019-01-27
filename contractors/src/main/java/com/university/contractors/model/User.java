@@ -1,5 +1,6 @@
 package com.university.contractors.model;
 
+// todo add model to database
 public class User {
 
     private String username;

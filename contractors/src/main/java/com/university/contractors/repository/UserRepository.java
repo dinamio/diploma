@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Component // todo switch from in memory real repository.
 public class UserRepository {
 
     private final static Map<String, User> inMemoryDb = new HashMap<>();

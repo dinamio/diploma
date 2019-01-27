@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // todo: add password encryption
         auth.userDetailsService(customUserDetailService).passwordEncoder(new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
