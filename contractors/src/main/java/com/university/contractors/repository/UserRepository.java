@@ -12,7 +12,7 @@ public class UserRepository {
     private final static Map<String, User> inMemoryDb = new HashMap<>();
 
     static {
-        inMemoryDb.put("admin", new User("admin", "pass", true));
+        inMemoryDb.put("admin", new User("admin", "pass"));
     }
 
 
