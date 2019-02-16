@@ -11,13 +11,13 @@ public class Country {
     @Column(name = "id_country")
     private Long id;
 
-    @Column(name = "Country_NameUa")
+    @Column(name = "country_name_ua")
     private String countryNameUa;
 
-    @Column(name = "Country_NameEng")
+    @Column(name = "country_name_eng")
     private String countryNameEng;
 
-    @Column(name = "Country_NameRu")
+    @Column(name = "country_name_ru")
     private String getCountryNameRu;
 
     public Long getId() {
