@@ -2,6 +2,7 @@ package com.university.contractors.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Student")
@@ -9,23 +10,23 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id_Student")
+    @Column(name = "id_student")
     private Long id;
 
-    @Column(name = "StudSurname")
+    @Column(name = "stud_surname")
     private String surname;
 
-    @Column(name = "StudName")
+    @Column(name = "stud_name")
     private String name;
 
-    @Column(name = "StudMiddlename")
+    @Column(name = "stud_middlename")
     private String middleName;
 
-    @Column(name = "dateOfBirth")
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @ManyToOne
-    @JoinColumn(name = "Ref_Country")
+    @JoinColumn(name = "ref_country")
     private Country country;
 
     public Long getId() {
@@ -75,4 +76,19 @@ public class Student {
     public void setCountry(Country country) {
         this.country = country;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(id, student.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
 }
