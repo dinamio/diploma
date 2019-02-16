@@ -17,6 +17,7 @@ import java.io.IOException;
 import static com.university.contractors.config.SecurityConstants.*;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+
     private final CustomUserDetailService customUserDetailService;
 
     JwtAuthorizationFilter(AuthenticationManager authenticationManager, CustomUserDetailService customUserDetailService) {
@@ -40,12 +41,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(HEADER_NAME);
 
-        if (token == null) return null;
+        if (token == null) {
+            return null;
+        }
 
         String username = Jwts.parser().setSigningKey(SECRET)
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .getBody()
                 .getSubject();
+
         UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
         User user = customUserDetailService.loadCustomUserByUsername(username);
         return userDetails != null ? new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities()) : null;
