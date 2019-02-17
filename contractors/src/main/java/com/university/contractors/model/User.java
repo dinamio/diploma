@@ -19,6 +19,7 @@ public class User {
     private String passwordHash;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private String token;
 
