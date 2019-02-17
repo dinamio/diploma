@@ -38,7 +38,7 @@ public class SignUpUserService {
         final String username = userToSignUp.getUsername();
 
         if (usernameIsNotUnique(username)) {
-            throw new UsernameAlreadyRegistered();
+            throw new UsernameAlreadyRegisteredException();
         }
 
         final User user = new User();
