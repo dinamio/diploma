@@ -19,22 +19,25 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import static com.university.contractors.config.SecurityConstants.EXPIRATION_TIME;
+import static com.university.contractors.config.SecurityConstants.DEFAULT_EXPIRATION_TIME;
 import static com.university.contractors.config.SecurityConstants.SECRET;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
 
-    JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    JwtAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper) {
         this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
+        setFilterProcessesUrl(Endpoints.LOGIN);
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            final User user = parseUserFromJson(request);
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPasswordHash()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -42,12 +45,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-        ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plus(EXPIRATION_TIME, ChronoUnit.MILLIS);
-        String token = Jwts.builder().setSubject(((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername())
+        final ZonedDateTime expirationTime = ZonedDateTime.now(ZoneOffset.UTC).plus(DEFAULT_EXPIRATION_TIME, ChronoUnit.MILLIS);
+
+        final String token = Jwts.builder().setSubject(((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername())
                 .setExpiration(Date.from(expirationTime.toInstant()))
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
+
         response.getWriter().write(token);
     }
 
+    private User parseUserFromJson(HttpServletRequest request) throws IOException {
+        return objectMapper.readValue(request.getInputStream(), User.class);
+    }
 }
