@@ -1,7 +1,7 @@
 package com.university.contractors.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.university.contractors.model.User;
+import com.university.contractors.controller.payload.LoginUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,9 +36,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            final User user = parseUserFromJson(request);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPasswordHash()));
+            final LoginUser user = parseUserFromJson(request);
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             throw new RuntimeException(e);
         }
     }
@@ -55,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(token);
     }
 
-    private User parseUserFromJson(HttpServletRequest request) throws IOException {
-        return objectMapper.readValue(request.getInputStream(), User.class);
+    private LoginUser parseUserFromJson(HttpServletRequest request) throws IOException {
+        return objectMapper.readValue(request.getInputStream(), LoginUser.class);
     }
 }
