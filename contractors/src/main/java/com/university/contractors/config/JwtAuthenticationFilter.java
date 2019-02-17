@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
 
-        response.getWriter().write(token);
+        response.getWriter().write(token); // TODO: 18/02/19 add token saving to database.
     }
 
     private LoginUser parseUserFromJson(HttpServletRequest request) throws IOException {
