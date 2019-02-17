@@ -1,9 +1,12 @@
 package com.university.contractors;
 
 import com.university.contractors.config.Endpoints;
+import com.university.contractors.controller.payload.SignUpUser;
+import com.university.contractors.controller.payload.SignUpUserBuilder;
 import com.university.contractors.model.User;
 import com.university.contractors.model.UserBuilder;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -20,8 +25,8 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest {
 
-    private static final String DEFAULT_ADMIN_USERNAME = "admin";
-    private static final String DEFAULT_ADMIN_PASSWORD = "pass";
+    private final String USERNAME_TO_REGISTER = "john" + UUID.randomUUID();
+    private final String PASSWORD_TO_REGISTER = "strongPassword";
 
     @LocalServerPort
     int port;
@@ -29,13 +34,24 @@ public class AuthenticationTest {
     @Before
     public void setUp() {
         RestAssured.port = port;
+
+        final SignUpUser userJohn = SignUpUserBuilder.aSignUpUser()
+                .username(USERNAME_TO_REGISTER)
+                .password(PASSWORD_TO_REGISTER)
+                .confirmationPassword(PASSWORD_TO_REGISTER)
+                .build();
+
+        given().body(userJohn)
+                .contentType(ContentType.JSON)
+                .post(Endpoints.SIGN_UP)
+                .then().statusCode(HTTP_OK);
     }
 
     @Test
     public void shouldAuthenticateUsersWithValidCredentials() {
         final User user = UserBuilder.anUser()
-                .username(DEFAULT_ADMIN_USERNAME)
-                .password(DEFAULT_ADMIN_PASSWORD)
+                .username(USERNAME_TO_REGISTER)
+                .passwordHash(PASSWORD_TO_REGISTER)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);
@@ -45,11 +61,11 @@ public class AuthenticationTest {
 
     @Test
     public void shouldUnAuthorizeUsersWithInvalidUsername() {
-        final String invalidUsername = DEFAULT_ADMIN_USERNAME + "invalid";
+        final String invalidUsername = USERNAME_TO_REGISTER + "invalid";
 
         final User user = UserBuilder.anUser()
                 .username(invalidUsername)
-                .password(DEFAULT_ADMIN_PASSWORD)
+                .passwordHash(PASSWORD_TO_REGISTER)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);
@@ -59,11 +75,11 @@ public class AuthenticationTest {
 
     @Test
     public void shouldUnAuthorizeUsersWithInvalidPassword() {
-        final String invalidPassword = DEFAULT_ADMIN_PASSWORD + "invalid";
+        final String invalidPassword = PASSWORD_TO_REGISTER + "invalid";
 
         final User user = UserBuilder.anUser()
-                .username(DEFAULT_ADMIN_USERNAME)
-                .password(invalidPassword)
+                .username(USERNAME_TO_REGISTER)
+                .passwordHash(invalidPassword)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);
