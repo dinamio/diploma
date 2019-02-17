@@ -2,10 +2,10 @@ package com.university.contractors.controller;
 
 import com.university.contractors.Application;
 import com.university.contractors.config.Endpoints;
+import com.university.contractors.controller.payload.LoginUser;
+import com.university.contractors.controller.payload.LoginUserBuilder;
 import com.university.contractors.controller.payload.SignUpUser;
 import com.university.contractors.controller.payload.SignUpUserBuilder;
-import com.university.contractors.model.User;
-import com.university.contractors.model.UserBuilder;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -45,9 +45,9 @@ public class SingUpControllerTest {
                 .post(Endpoints.SIGN_UP)
                 .then().statusCode(HTTP_OK);
 
-        final User signedUpUser = UserBuilder.anUser()
+        final LoginUser signedUpUser = LoginUserBuilder.aLoginUser()
                 .username(USERNAME_TO_REGISTER)
-                .passwordHash(PASSWORD_TO_REGISTER)
+                .password(PASSWORD_TO_REGISTER)
                 .build();
 
         getPreparedGiven()

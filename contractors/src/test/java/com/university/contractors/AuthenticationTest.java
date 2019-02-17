@@ -1,10 +1,10 @@
 package com.university.contractors;
 
 import com.university.contractors.config.Endpoints;
+import com.university.contractors.controller.payload.LoginUser;
+import com.university.contractors.controller.payload.LoginUserBuilder;
 import com.university.contractors.controller.payload.SignUpUser;
 import com.university.contractors.controller.payload.SignUpUserBuilder;
-import com.university.contractors.model.User;
-import com.university.contractors.model.UserBuilder;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -49,9 +49,9 @@ public class AuthenticationTest {
 
     @Test
     public void shouldAuthenticateUsersWithValidCredentials() {
-        final User user = UserBuilder.anUser()
+        final LoginUser user = LoginUserBuilder.aLoginUser()
                 .username(USERNAME_TO_REGISTER)
-                .passwordHash(PASSWORD_TO_REGISTER)
+                .password(PASSWORD_TO_REGISTER)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);
@@ -63,9 +63,9 @@ public class AuthenticationTest {
     public void shouldUnAuthorizeUsersWithInvalidUsername() {
         final String invalidUsername = USERNAME_TO_REGISTER + "invalid";
 
-        final User user = UserBuilder.anUser()
+        final LoginUser user = LoginUserBuilder.aLoginUser()
                 .username(invalidUsername)
-                .passwordHash(PASSWORD_TO_REGISTER)
+                .password(PASSWORD_TO_REGISTER)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);
@@ -77,9 +77,9 @@ public class AuthenticationTest {
     public void shouldUnAuthorizeUsersWithInvalidPassword() {
         final String invalidPassword = PASSWORD_TO_REGISTER + "invalid";
 
-        final User user = UserBuilder.anUser()
+        final LoginUser user = LoginUserBuilder.aLoginUser()
                 .username(USERNAME_TO_REGISTER)
-                .passwordHash(invalidPassword)
+                .password(invalidPassword)
                 .build();
 
         final Response response = given().body(user).post(Endpoints.LOGIN);

@@ -3,12 +3,12 @@ package com.university.contractors.controller;
 import com.university.contractors.Application;
 import com.university.contractors.config.Endpoints;
 import com.university.contractors.config.SecurityConstants;
+import com.university.contractors.controller.payload.LoginUser;
+import com.university.contractors.controller.payload.LoginUserBuilder;
 import com.university.contractors.controller.payload.SignUpUser;
 import com.university.contractors.controller.payload.SignUpUserBuilder;
 import com.university.contractors.model.Student;
 import com.university.contractors.model.StudentBuilder;
-import com.university.contractors.model.User;
-import com.university.contractors.model.UserBuilder;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
@@ -101,8 +101,9 @@ public class StudentControllerTest {
     }
 
     private String requestToken(String username, String password) {
-        final User userToRequestTokenOf = UserBuilder.anUser().username(username)
-                .passwordHash(password)
+        final LoginUser userToRequestTokenOf = LoginUserBuilder.aLoginUser()
+                .username(username)
+                .password(password)
                 .build();
 
         final Response response = given().body(userToRequestTokenOf).post(Endpoints.LOGIN);
