@@ -1,22 +1,13 @@
 package com.university.contractors.repository;
 
 import com.university.contractors.model.User;
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
-@Component // todo switch from in memory real repository.
-public class UserRepository {
+@Repository
+public interface UserRepository extends CrudRepository<User, Long> {
 
-    private final static Map<String, User> inMemoryDb = new HashMap<>();
-
-    static {
-        inMemoryDb.put("admin", new User("admin", "pass"));
-    }
-
-
-    public User findByUsername(String username) {
-        return inMemoryDb.get(username);
-    }
+    Optional<User> findByUsername(String username);
 }
