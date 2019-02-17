@@ -1,53 +1,49 @@
 package com.university.contractors.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.university.contractors.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailService customUserDetailService;
+    private final ContractorsUserDetailService contractorsUserDetailService;
+    private final BCryptPasswordEncoder bcryptPasswordEncoder;
 
     @Autowired
-    public SecurityConfiguration(CustomUserDetailService customUserDetailService) {
-        this.customUserDetailService = customUserDetailService;
+    public SecurityConfiguration(ContractorsUserDetailService contractorsUserDetailService,
+                                 BCryptPasswordEncoder bcryptPasswordEncoder) {
+        this.contractorsUserDetailService = contractorsUserDetailService;
+        this.bcryptPasswordEncoder = bcryptPasswordEncoder;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
-                .cors().and().csrf().disable().authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers(HttpMethod.GET, "/student").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/**").hasAnyRole("ADMIN")
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), customUserDetailService));
+                .cors().and().csrf().disable().authorizeRequests()
+
+                .antMatchers(Endpoints.LOGIN).permitAll()
+                .antMatchers(Endpoints.SIGN_UP).permitAll()
+                .antMatchers(Endpoints.ENTITY_PREFIX + "/**").hasAnyAuthority(UserRole.USER.getValue(), UserRole.ADMIN.getValue())
+
+                .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), new ObjectMapper()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), contractorsUserDetailService));
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // todo: add password encryption
-        auth.userDetailsService(customUserDetailService).passwordEncoder(new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return rawPassword.toString().equals(encodedPassword);
-            }
-        });
+        auth.userDetailsService(contractorsUserDetailService)
+                .passwordEncoder(bcryptPasswordEncoder);
     }
 }
