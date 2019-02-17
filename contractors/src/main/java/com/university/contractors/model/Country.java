@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Country {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_country")
     private Long id;
 
