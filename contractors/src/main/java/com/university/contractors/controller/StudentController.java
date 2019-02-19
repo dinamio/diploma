@@ -24,11 +24,11 @@ public class StudentController {
     public Student getById(@PathVariable Long id) {
         Optional<Student> optionalStudentById = studentRepository.findById(id);
 
-        if (optionalStudentById.isPresent()) {
-            return optionalStudentById.get();
+        if (!optionalStudentById.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id '%s' was not found.");
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id '%s' was not found.");
+        return optionalStudentById.get();
     }
 
     @GetMapping(path = Endpoints.STUDENTS)
@@ -50,10 +50,10 @@ public class StudentController {
     public void delete(@PathVariable Long id) {
         boolean isStudentWithGivenIdExists = studentRepository.existsById(id);
 
-        if (isStudentWithGivenIdExists) {
-            studentRepository.deleteById(id);
+        if (!isStudentWithGivenIdExists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id '%s' was not found.");
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Student with id '%s' was not found.");
+        studentRepository.deleteById(id);
     }
 }
