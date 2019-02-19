@@ -1,11 +1,12 @@
 package com.university.contractors.model;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
-@Table(name = "Student")
+@Table(name = "Students")
 public class Student {
 
     @Id
@@ -82,13 +83,11 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(id, student.id);
+        return Objects.equal(id, student.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hashCode(id);
     }
-
-
 }

@@ -1,5 +1,8 @@
 package com.university.contractors.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -21,6 +24,8 @@ public class User {
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    @JsonIgnore
     private String token;
 
     public Long getId() {
@@ -61,5 +66,18 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equal(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -1,5 +1,7 @@
 package com.university.contractors.model;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 
 @Entity
@@ -50,5 +52,18 @@ public class Country {
 
     public void setGetCountryNameRu(String getCountryNameRu) {
         this.getCountryNameRu = getCountryNameRu;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return Objects.equal(id, country.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
