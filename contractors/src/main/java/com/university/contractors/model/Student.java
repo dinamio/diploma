@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Students")
 public class Student {
 
     @Id
