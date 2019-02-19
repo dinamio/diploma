@@ -7,11 +7,11 @@
 ### How to start database server with Docker
 ##### Steps for macOS/Ubuntu
 1. Setup docker([macOS](https://docs.docker.com/docker-for-mac/install) / [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/))
-2. Pull image with database by running following:
+2. Pull image with database by executing following command:
     ```
     docker pull olegbarmin/diploma:latest
     ```
-3. Find ID of downloaded image by running:
+3. Find ID of downloaded image by executing:
     ```
     docker image ls
     ```
