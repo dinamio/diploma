@@ -2,6 +2,7 @@ package com.university.contractors.config;
 
 import com.university.contractors.model.User;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
+            IOException, ServletException {
+        try {
+            authorizeRequest(request, response, chain);
+        } catch (MalformedJwtException exception) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    private void authorizeRequest(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws
+            IOException, ServletException {
         final String authorizationHeaderValue = request.getHeader(HEADER_NAME);
 
         if (hasInvalidHeaderValue(authorizationHeaderValue)) {
@@ -44,19 +55,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        String token = request.getHeader(HEADER_NAME);
+        final String token = request.getHeader(HEADER_NAME);
 
         if (Objects.isNull(token)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request should contain header with token.");
         }
 
         final String username = Jwts.parser().setSigningKey(SECRET)
-                .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                .parseClaimsJws(token.substring(TOKEN_PREFIX.length()))
                 .getBody()
                 .getSubject();
 
-        UserDetails userDetails = contractorsUserDetailService.loadUserByUsername(username);
-        User user = contractorsUserDetailService.loadCustomUserByUsername(username);
+        final UserDetails userDetails = contractorsUserDetailService.loadUserByUsername(username);
+        final User user = contractorsUserDetailService.loadCustomUserByUsername(username);
 
         return new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities());
     }
