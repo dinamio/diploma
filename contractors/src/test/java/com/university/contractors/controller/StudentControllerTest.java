@@ -13,6 +13,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+import static java.net.HttpURLConnection.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -46,58 +46,90 @@ public class StudentControllerTest {
                 .password(JOHN_PASSWORD)
                 .confirmationPassword(JOHN_PASSWORD)
                 .build();
-
         given().body(userJohn)
                 .contentType(ContentType.JSON)
                 .post(Endpoints.SIGN_UP)
-                .then().statusCode(HTTP_OK);
+                .then()
+                .statusCode(HTTP_OK);
     }
 
     @Test
-    public void shouldAuthorizeStudentsCreationForAuthenticatedUser() {
-        final Student studentToCreate = StudentBuilder.aStudent().name("John")
-                .surname("Smith")
-                .middleName("Mihailovich")
-                .build();
+    public void shouldAllowStudentsCreationForAuthenticatedUser() {
+        final Student studentToCreate = getStudentBuilder().build();
 
         given().contentType(ContentType.JSON)
                 .body(studentToCreate).post(Endpoints.STUDENTS).then().statusCode(HTTP_UNAUTHORIZED);
 
-        final String token = requestToken(JOHN_USERNAME, JOHN_PASSWORD);
-        final Header header = getHeader(token);
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
 
-        given().header(header)
+        getPreparedRequestSpecification(header)
                 .body(studentToCreate)
-                .contentType(ContentType.JSON)
                 .post(Endpoints.STUDENTS)
                 .then()
                 .statusCode(HTTP_OK);
     }
 
     @Test
-    public void shouldAuthorizeStudentsFetchingForAuthenticatedUser() {
-        final Student studentToCreate = StudentBuilder.aStudent().name("John")
-                .surname("Smith")
-                .middleName("Mihailovich")
-                .build();
+    public void shouldAllowStudentsFetchingForAuthenticatedUser() {
+        final Student studentToCreate = getStudentBuilder().build();
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final Student studentInResponse = sendCreateEntityRequest(studentToCreate, header);
 
-        final String token = requestToken(JOHN_USERNAME, JOHN_PASSWORD);
-        final Header header = getHeader(token);
+        assertEntities(studentToCreate, studentInResponse);
 
-        final Response postResponse = given().header(header)
-                .body(studentToCreate)
-                .contentType(ContentType.JSON)
-                .post(Endpoints.STUDENTS);
-        postResponse.then().statusCode(HTTP_OK);
-        final Student studentInResponse = postResponse.as(Student.class);
-
-        assertEquals(studentToCreate.getSurname(), studentInResponse.getSurname()); // todo change to full field comparing except id
-
-        final Response getResponse = given().header(header)
+        final Response getResponse = getPreparedRequestSpecification(header)
                 .get(Endpoints.STUDENTS + "/" + studentInResponse.getId());
         final Student savedStudent = getResponse.as(Student.class);
 
-        assertEquals(studentInResponse.getSurname(), savedStudent.getSurname()); // todo change to full field comparing except id
+        assertEntities(studentInResponse, savedStudent);
+    }
+
+    @Test
+    public void shouldAllowStudentDeletionForAuthenticatedUsers() {
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final Student studentToDelete = sendCreateEntityRequest(getStudentBuilder().build(), header);
+
+        getPreparedRequestSpecification(header)
+                .delete(Endpoints.STUDENTS + "/" + studentToDelete.getId())
+                .then()
+                .statusCode(HTTP_OK);
+
+        getPreparedRequestSpecification(header)
+                .get(Endpoints.STUDENTS + "/" + studentToDelete.getId())
+                .then().statusCode(HTTP_NOT_FOUND);
+    }
+
+    @Test
+    public void shouldResponseWithNotFoundStatusCodeIfUserToDeleteDoesNotExists() {
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final Student studentToDelete = sendCreateEntityRequest(getStudentBuilder().build(), header);
+
+        getPreparedRequestSpecification(header)
+                .delete(Endpoints.STUDENTS + "/" + studentToDelete.getId())
+                .then()
+                .statusCode(HTTP_OK);
+
+        getPreparedRequestSpecification(header)
+                .delete(Endpoints.STUDENTS + "/" + studentToDelete.getId())
+                .then().statusCode(HTTP_NOT_FOUND);
+    }
+
+    private Student sendCreateEntityRequest(Student studentToCreate, Header header) {
+        final Response postResponse = getPreparedRequestSpecification(header)
+                .body(studentToCreate)
+                .post(Endpoints.STUDENTS);
+        postResponse.then().statusCode(HTTP_OK);
+        return postResponse.as(Student.class);
+    }
+
+    private Header getAuthorizationHeader(String username, String password) {
+        final String token = requestToken(JOHN_USERNAME, JOHN_PASSWORD);
+        return getHeader(token);
+    }
+
+    private RequestSpecification getPreparedRequestSpecification(Header header) {
+        return given().header(header)
+                .contentType(ContentType.JSON);
     }
 
     private String requestToken(String username, String password) {
@@ -114,5 +146,24 @@ public class StudentControllerTest {
 
     private Header getHeader(String token) {
         return new Header(SecurityConstants.HEADER_NAME, SecurityConstants.TOKEN_PREFIX + token);
+    }
+
+    private StudentBuilder getStudentBuilder() {
+        return StudentBuilder.aStudent().name("John" + UUID.randomUUID())
+                .surname("Smith" + UUID.randomUUID())
+                .middleName("Mihailovich" + UUID.randomUUID());
+    }
+
+    private void assertEntities(Student expected, Student actual) {
+        assertEquals("Expected student surname doesn't match actual.",
+                expected.getSurname(), actual.getSurname());
+        assertEquals("Expected student name doesn't match actual.",
+                expected.getName(), actual.getName());
+        assertEquals("Expected student surname doesn't match actual.",
+                expected.getMiddleName(), actual.getMiddleName());
+        assertEquals("Expected student date of birth doesn't match actual.",
+                expected.getDateOfBirth(), actual.getDateOfBirth());
+        assertEquals("Expected student country of birth doesn't match actual.",
+                expected.getCountry(), actual.getCountry());
     }
 }
