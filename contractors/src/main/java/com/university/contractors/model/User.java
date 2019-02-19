@@ -1,13 +1,12 @@
 package com.university.contractors.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "system_users")
 public class User {
 
     @Id
@@ -25,7 +24,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @JsonIgnore
     private String token;
 
     public Long getId() {
