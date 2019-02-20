@@ -5,7 +5,7 @@ import com.google.common.base.Objects;
 import javax.persistence.*;
 
 @Entity
-public class Country {
+public class Country implements IdEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,12 @@ public class Country {
     @Column(name = "country_name_ru")
     private String getCountryNameRu;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
