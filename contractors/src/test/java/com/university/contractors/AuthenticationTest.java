@@ -86,4 +86,8 @@ public class AuthenticationTest {
 
         response.then().statusCode(HTTP_UNAUTHORIZED);
     }
+
+    // TODO: 20/02/19 Add test to validate token experation time
+    // TODO: 20/02/19 add test to validate behavior with malformat token/prefix
+    // TODO: 20/02/19 test token expiration
 }
