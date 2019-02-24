@@ -263,6 +263,8 @@ public abstract class AbstractCrudControllerTest<I, E extends IdEntity<I>> {
 
     }
 
+    // TODO: 25/02/19 add test with token, which doesnt exists in db, but with existing username.
+
     abstract Set<E> extractEntitiesSet(Response response);
 
     private E sendCreateEntityRequest(E entityToCreate, Header header) {

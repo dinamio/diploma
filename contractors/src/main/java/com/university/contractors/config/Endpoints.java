@@ -38,4 +38,7 @@ public interface Endpoints {
 
     String FACULTIES = ENTITY_PREFIX + "/faculties";
     String FACULTY_BY_ID = FACULTIES + ID_PARAMETER;
+
+    String DIRECTIONS = ENTITY_PREFIX + "/directions";
+    String DIRECTION_BY_ID = DIRECTIONS + ID_PARAMETER;
 }

@@ -28,7 +28,7 @@ public class AuthorizationService {
 
         final String username = tokenParser.getUsernameFormToken(token);
         final UserDetails userDetails = contractorsUserDetailService.loadUserByUsername(username);
-        final User user = contractorsUserDetailService.loadCustomUserByUsername(username);
+        final User user = contractorsUserDetailService.loadCustomUserByUsername(username); // todo add token validation
 
         return new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities());
     }
