@@ -2,6 +2,7 @@ package com.university.contractors.config;
 
 import com.university.contractors.controller.payload.LoginUser;
 import com.university.contractors.service.AuthenticationService;
+import com.university.contractors.service.EntityParser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

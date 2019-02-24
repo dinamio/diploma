@@ -1,10 +1,10 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class BCryptPasswordEncoder implements PasswordEncoder {
 
     private static final int HASHING_ROUNDS = 11;

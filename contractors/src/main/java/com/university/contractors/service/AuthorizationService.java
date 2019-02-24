@@ -1,7 +1,5 @@
 package com.university.contractors.service;
 
-import com.university.contractors.config.ContractorsUserDetailService;
-import com.university.contractors.config.TokenParser;
 import com.university.contractors.model.User;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;

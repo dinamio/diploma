@@ -1,4 +1,4 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

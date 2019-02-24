@@ -1,8 +1,7 @@
 package com.university.contractors.config;
 
 import com.university.contractors.model.UserRole;
-import com.university.contractors.service.AuthenticationService;
-import com.university.contractors.service.AuthorizationService;
+import com.university.contractors.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;

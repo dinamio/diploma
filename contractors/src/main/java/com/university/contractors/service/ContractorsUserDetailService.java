@@ -1,17 +1,16 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 import com.university.contractors.model.User;
 import com.university.contractors.repository.UserRepository;
-import com.university.contractors.service.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Component
+@Service
 public class ContractorsUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;

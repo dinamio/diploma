@@ -1,15 +1,15 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
 
 import static com.university.contractors.config.SecurityConstants.SECRET;
 
-@Component
+@Service
 public class TokenBuilder {
 
     public String buildToken(String username, ZonedDateTime expirationTime) {

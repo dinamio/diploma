@@ -1,12 +1,12 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import static com.university.contractors.config.SecurityConstants.SECRET;
 
-@Component
+@Service
 public class TokenParser {
 
     public String getUsernameFormToken(String token) throws MalformedJwtException {
