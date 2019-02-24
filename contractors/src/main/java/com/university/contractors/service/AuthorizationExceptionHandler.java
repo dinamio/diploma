@@ -18,7 +18,7 @@ public class AuthorizationExceptionHandler {
             return joinPoint.proceed();
         } catch (UsernameNotFoundException exception) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        } catch (AbstractAuthorizationException exception) {
+        } catch (MalformedTokenException exception) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }

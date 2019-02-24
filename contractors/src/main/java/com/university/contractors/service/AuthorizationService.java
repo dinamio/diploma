@@ -39,20 +39,20 @@ public class AuthorizationService {
 
     private String getTokenFromHeaderValue(String headerValue) {
         if (hasInvalidHeaderValue(headerValue)) {
-            throw new AuthorizationHeaderNotFound();
+            throw new AuthorizationHeaderNotFoundException();
         }
 
         final String[] prefixAndToken = headerValue.split(SPACE);
 
         if (ObjectUtils.notEqual(prefixAndToken.length, 2)) {
-            throw new AuthorizationHeaderMalformedValueException(headerValue);
+            throw new MalformedTokenException();
         }
 
         final String prefix = prefixAndToken[0];
         final String token = prefixAndToken[1];
 
         if (ObjectUtils.notEqual(prefix, TOKEN_PREFIX)) {
-            throw new AuthorizationInvalidPrefixException();
+            throw new MalformedTokenException();
         }
 
         return token;
