@@ -30,12 +30,9 @@ public class CountryControllerTest extends AbstractCrudControllerTest<Long, Coun
 
     @Override
     void assertEntities(Country expected, Country actual) {
-        assertEquals("Expected student surname doesn't match actual.",
-                expected.getCountryNameEng(), actual.getCountryNameEng());
-        assertEquals("Expected student name doesn't match actual.",
-                expected.getCountryNameUa(), actual.getCountryNameUa());
-        assertEquals("Expected student surname doesn't match actual.",
-                expected.getCountryNameRu(), actual.getCountryNameRu());
+        assertEquals(expected.getCountryNameEng(), actual.getCountryNameEng());
+        assertEquals(expected.getCountryNameUa(), actual.getCountryNameUa());
+        assertEquals(expected.getCountryNameRu(), actual.getCountryNameRu());
     }
 
     @Override

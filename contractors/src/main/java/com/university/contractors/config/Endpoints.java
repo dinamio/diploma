@@ -17,4 +17,7 @@ public interface Endpoints {
 
     String COUNTRIES = ENTITY_PREFIX + "/countries";
     String COUNTRY_BY_ID = COUNTRIES + ID_PARAMETER;
+
+    String ARRIVAL_LINES = ENTITY_PREFIX + "/arrival_lines";
+    String ARRIVAL_LINE_BY_ID = ARRIVAL_LINES + ID_PARAMETER;
 }
