@@ -20,11 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
+import static junit.framework.TestCase.assertTrue;
 import static org.apache.commons.lang3.StringUtils.SPACE;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -88,6 +91,25 @@ public abstract class AbstractControllerTest<I, E extends IdEntity<I>> {
     }
 
     @Test
+    public void shouldProvideAllCreatedEntities() {
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E firstEntity = sendCreateEntityRequest(getArbitraryEntity(), header);
+        final E secondEntity = sendCreateEntityRequest(getArbitraryEntity(), header);
+        final E thirdEntity = sendCreateEntityRequest(getArbitraryEntity(), header);
+
+        final Response response = getPreparedRequestSpecification(header)
+                .get(ENDPOINT);
+        response.then()
+                .statusCode(HTTP_OK);
+
+        Set<E> entitiesSet = extractEntitiesSet(response);
+
+        assertTrue(entitiesSet.contains(firstEntity));
+        assertTrue(entitiesSet.contains(secondEntity));
+        assertTrue(entitiesSet.contains(thirdEntity));
+    }
+
+    @Test
     public void shouldAllowPutForAuthenticatedUser() {
         final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
         final E entityToUpdate = sendCreateEntityRequest(getArbitraryEntity(), header);
@@ -103,6 +125,36 @@ public abstract class AbstractControllerTest<I, E extends IdEntity<I>> {
 
         final E updatedEntity = putResponse.getBody().as(entityType);
         assertEntities(entityToUpdateWith, updatedEntity);
+    }
+
+    @Test
+    public void shouldResponseWith422StatusCodeWhenUpdateEntityWithAbsentIdPayload() {
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E entityToUpdate = sendCreateEntityRequest(getArbitraryEntity(), header);
+
+        final E entityToUpdateWith = getArbitraryEntity();
+
+        getPreparedRequestSpecification(header)
+                .body(entityToUpdateWith)
+                .put(getRequestPathToEntity(entityToUpdate))
+                .then()
+                .statusCode(UNPROCESSABLE_ENTITY.value());
+    }
+
+    @Test
+    public void shouldResponseWith400StatusCodeWhenUpdateEntityWithAnOtherId() {
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E entityToUpdate = sendCreateEntityRequest(getArbitraryEntity(), header);
+        final E entityWithAnOtherId = sendCreateEntityRequest(getArbitraryEntity(), header);
+
+        final E entityToUpdateWith = getArbitraryEntity();
+        entityToUpdateWith.setId(entityWithAnOtherId.getId());
+
+        getPreparedRequestSpecification(header)
+                .body(entityToUpdateWith)
+                .put(getRequestPathToEntity(entityToUpdate))
+                .then()
+                .statusCode(HTTP_BAD_REQUEST);
     }
 
     @Test
@@ -163,6 +215,53 @@ public abstract class AbstractControllerTest<I, E extends IdEntity<I>> {
                 .then()
                 .statusCode(HTTP_UNAUTHORIZED);
     }
+
+    @Test
+    public void shouldResponseWith401ResponseCodeWhenInvalidHeaderWasGiven() {
+        final E entityToCreate = getArbitraryEntity();
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E entityInResponse = sendCreateEntityRequest(entityToCreate, header);
+
+        given()
+                .header(SecurityConstants.HEADER_NAME + "invalidHeader", header.getValue())
+                .contentType(ContentType.JSON)
+                .get(getRequestPathToEntity(entityInResponse))
+                .then()
+                .statusCode(HTTP_UNAUTHORIZED);
+
+    }
+
+    @Test
+    public void shouldResponseWith400ResponseCodeWhenInvalidPrefixWasGiven() {
+        final E entityToCreate = getArbitraryEntity();
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E entityInResponse = sendCreateEntityRequest(entityToCreate, header);
+
+        given()
+                .header(SecurityConstants.HEADER_NAME, "invalidPrefix" + header.getValue())
+                .contentType(ContentType.JSON)
+                .get(getRequestPathToEntity(entityInResponse))
+                .then()
+                .statusCode(HTTP_BAD_REQUEST);
+
+    }
+
+    @Test
+    public void shouldResponseWith400ResponseCodeWhenTokenInInvalidFormat() {
+        final E entityToCreate = getArbitraryEntity();
+        final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
+        final E entityInResponse = sendCreateEntityRequest(entityToCreate, header);
+
+        given()
+                .header(SecurityConstants.HEADER_NAME, header.getValue() + " invalid token format")
+                .contentType(ContentType.JSON)
+                .get(getRequestPathToEntity(entityInResponse))
+                .then()
+                .statusCode(HTTP_BAD_REQUEST);
+
+    }
+
+    abstract Set<E> extractEntitiesSet(Response response);
 
     private E sendCreateEntityRequest(E entityToCreate, Header header) {
         final Response postResponse = getPreparedRequestSpecification(header)

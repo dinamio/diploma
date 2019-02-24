@@ -4,17 +4,26 @@ import com.university.contractors.Application;
 import com.university.contractors.config.Endpoints;
 import com.university.contractors.model.Student;
 import com.university.contractors.model.StudentBuilder;
+import io.restassured.response.Response;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTest extends AbstractControllerTest<Long, Student> {
+
+    @Override
+    Set<Student> extractEntitiesSet(Response response) {
+        return Arrays.stream(response.as(Student[].class)).collect(Collectors.toSet());
+    }
 
     @Override
     Student getArbitraryEntity() {

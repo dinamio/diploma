@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -24,7 +26,7 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SingUpControllerTest {
 
-    private static final String USERNAME_TO_REGISTER = "john";
+    private static final String PREFIX_USERNAME_TO_REGISTER = "john";
     private static final String PASSWORD_TO_REGISTER = "strongPassword";
 
     @LocalServerPort
@@ -46,8 +48,8 @@ public class SingUpControllerTest {
                 .then().statusCode(HTTP_OK);
 
         final LoginUser signedUpUser = LoginUserBuilder.aLoginUser()
-                .username(USERNAME_TO_REGISTER)
-                .password(PASSWORD_TO_REGISTER)
+                .username(userToSignUp.getUsername())
+                .password(userToSignUp.getPassword())
                 .build();
 
         getPreparedGiven()
@@ -58,7 +60,7 @@ public class SingUpControllerTest {
     }
 
     @Test
-    public void shouldNotSignInUserWithInvalidConfirmationPassword() {
+    public void shouldNotSignUpUserWithInvalidConfirmationPassword() {
         final SignUpUser userToSignUp = getUserBuilder()
                 .confirmationPassword(PASSWORD_TO_REGISTER + " mistake in confirmation password")
                 .build();
@@ -69,9 +71,41 @@ public class SingUpControllerTest {
                 .then().statusCode(HTTP_UNAUTHORIZED);
     }
 
+    @Test
+    public void shouldNotSignUpUserWithWithDuplicatedName() {
+        final SignUpUser userToSignUp = getUserBuilder()
+                .build();
+
+        getPreparedGiven()
+                .body(userToSignUp)
+                .post(Endpoints.SIGN_UP)
+                .then().statusCode(HTTP_OK);
+
+        final String anOtherPassword = "anOtherPassword";
+        getPreparedGiven().body(getUserBuilder()
+                .username(userToSignUp.getUsername())
+                .password(anOtherPassword)
+                .confirmationPassword(anOtherPassword)
+                .build())
+                .post(Endpoints.SIGN_UP)
+                .then()
+                .statusCode(HTTP_UNAUTHORIZED);
+
+        final LoginUser signedUpUser = LoginUserBuilder.aLoginUser()
+                .username(userToSignUp.getUsername())
+                .password(userToSignUp.getPassword())
+                .build();
+
+        getPreparedGiven()
+                .body(signedUpUser)
+                .post(Endpoints.LOGIN)
+                .then()
+                .statusCode(HTTP_OK);
+    }
+
     private SignUpUserBuilder getUserBuilder() {
         return SignUpUserBuilder.aSignUpUser()
-                .username(USERNAME_TO_REGISTER)
+                .username(PREFIX_USERNAME_TO_REGISTER + UUID.randomUUID().toString())
                 .password(PASSWORD_TO_REGISTER)
                 .confirmationPassword(PASSWORD_TO_REGISTER);
     }
