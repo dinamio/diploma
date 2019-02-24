@@ -32,4 +32,7 @@ public interface Endpoints {
 
     String EDUCATION_FORMS = ENTITY_PREFIX + "/education_forms";
     String EDUCATION_FORM_BY_ID = EDUCATION_FORMS + ID_PARAMETER;
+
+    String EDUCATION_LEVELS = ENTITY_PREFIX + "/education_levels";
+    String EDUCATION_LEVEL_BY_ID = EDUCATION_LEVELS + ID_PARAMETER;
 }
