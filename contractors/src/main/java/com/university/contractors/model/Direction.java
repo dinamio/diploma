@@ -15,7 +15,7 @@ public class Direction implements IdEntity<Long> {
     private String directionName;
 
     @ManyToOne
-    @JoinColumn(name = "ref_country")
+    @JoinColumn(name = "ref_faculty")
     private Faculty faculty;
 
     @Override

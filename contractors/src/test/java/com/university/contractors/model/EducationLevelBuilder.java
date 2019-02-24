@@ -17,7 +17,7 @@ public final class EducationLevelBuilder {
     }
 
     public EducationLevelBuilder educationLevelName(String educationLevelName) {
-        educationLevel.setEducationLevelName(educationLevelName);
+        educationLevel.setEducLevelName(educationLevelName);
         return this;
     }
 

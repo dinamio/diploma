@@ -12,7 +12,7 @@ public class EducationLevel implements IdEntity<Long> {
     @Column(name = "id_educ_level")
     private Long id;
 
-    private String educationLevelName;
+    private String educLevelName;
     private Integer numberOfMonth;
     private Boolean isSummerMonth;
 
@@ -26,12 +26,12 @@ public class EducationLevel implements IdEntity<Long> {
         this.id = id;
     }
 
-    public String getEducationLevelName() {
-        return educationLevelName;
+    public String getEducLevelName() {
+        return educLevelName;
     }
 
-    public void setEducationLevelName(String educationLevelName) {
-        this.educationLevelName = educationLevelName;
+    public void setEducLevelName(String educLevelName) {
+        this.educLevelName = educLevelName;
     }
 
     public Integer getNumberOfMonth() {

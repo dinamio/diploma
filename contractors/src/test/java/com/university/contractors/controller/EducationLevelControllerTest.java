@@ -31,7 +31,7 @@ public class EducationLevelControllerTest extends AbstractCrudControllerTest<Lon
 
     @Override
     void assertEntities(EducationLevel expected, EducationLevel actual) {
-        assertEquals(expected.getEducationLevelName(), actual.getEducationLevelName());
+        assertEquals(expected.getEducLevelName(), actual.getEducLevelName());
         assertEquals(expected.getNumberOfMonth(), actual.getNumberOfMonth());
         assertEquals(expected.getSummerMonth(), actual.getSummerMonth());
     }

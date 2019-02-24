@@ -26,7 +26,7 @@ public class AuthorizationService {
     public UsernamePasswordAuthenticationToken getAuthenticationToken(String headerValue) {
         final String token = getTokenFromHeaderValue(headerValue);
 
-        final String username = tokenParser.getUsernameFormToken(token);
+        final String username = tokenParser.getUsernameFormToken(token); // todo handle expired time tokens.
         final UserDetails userDetails = contractorsUserDetailService.loadUserByUsername(username);
         final User user = contractorsUserDetailService.loadCustomUserByUsername(username); // todo add token validation
 
