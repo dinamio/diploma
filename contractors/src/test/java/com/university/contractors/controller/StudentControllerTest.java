@@ -30,6 +30,7 @@ public class StudentControllerTest extends AbstractCrudControllerTest<Long, Stud
         return StudentBuilder.aStudent().name("John" + UUID.randomUUID())
                 .surname("Smith" + UUID.randomUUID())
                 .middleName("Mihailovich" + UUID.randomUUID())
+                .country(null) // todo set value
                 .build();
     }
 

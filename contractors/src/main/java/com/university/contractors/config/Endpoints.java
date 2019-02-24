@@ -20,4 +20,7 @@ public interface Endpoints {
 
     String ARRIVAL_LINES = ENTITY_PREFIX + "/arrival_lines";
     String ARRIVAL_LINE_BY_ID = ARRIVAL_LINES + ID_PARAMETER;
+
+    String PAYMENT_REASONS = ENTITY_PREFIX + "/payment_reasons";
+    String PAYMENT_REASON_BY_ID = PAYMENT_REASONS + ID_PARAMETER;
 }
