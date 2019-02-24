@@ -26,4 +26,7 @@ public interface Endpoints {
 
     String STUDENT_STATUSES = ENTITY_PREFIX + "/student_statuses";
     String STUDENT_STATUS_BY_ID = STUDENT_STATUSES + ID_PARAMETER;
+
+    String EDUCATION_PROGRAMS = ENTITY_PREFIX + "/education_programs";
+    String EDUCATION_PROGRAM_BY_ID = EDUCATION_PROGRAMS + ID_PARAMETER;
 }
