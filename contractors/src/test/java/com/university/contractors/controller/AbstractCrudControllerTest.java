@@ -31,7 +31,7 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class AbstractControllerTest<I, E extends IdEntity<I>> {
+public abstract class AbstractCrudControllerTest<I, E extends IdEntity<I>> {
 
     private final String JOHN_USERNAME = "john" + UUID.randomUUID();
     private final String JOHN_PASSWORD = "strongPassword";

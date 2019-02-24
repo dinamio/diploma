@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class StudentControllerTest extends AbstractControllerTest<Long, Student> {
+public class StudentControllerTest extends AbstractCrudControllerTest<Long, Student> {
 
     @Override
     Set<Student> extractEntitiesSet(Response response) {

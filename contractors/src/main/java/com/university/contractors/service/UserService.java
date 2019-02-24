@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,21 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @PostConstruct
+    public void createDefaultUser() {
+        final String adminUsername = "admin";
+        final Optional<User> byUsername = userRepository.findByUsername(adminUsername);
+
+        if (!byUsername.isPresent()) {
+            final User defaultUser = new User();
+            defaultUser.setUsername(adminUsername);
+            final String pass = new BCryptPasswordEncoder().encode("F7l8MBPa");
+            defaultUser.setPasswordHash(pass);
+            defaultUser.setUserRole(UserRole.ADMIN);
+
+            userRepository.save(defaultUser);
+        }
+    }
 
     public void signUpUser(SignUpUser userToSignUp) {
         final String password = userToSignUp.getPassword();
