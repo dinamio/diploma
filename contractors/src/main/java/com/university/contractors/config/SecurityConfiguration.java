@@ -1,7 +1,7 @@
 package com.university.contractors.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.university.contractors.model.UserRole;
+import com.university.contractors.service.AuthenticationService;
 import com.university.contractors.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -22,17 +22,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final ContractorsUserDetailService contractorsUserDetailService;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
     private final AuthorizationService authorizationService;
+    private final AuthenticationService authenticationService;
+    private final EntityParser entityParser;
 
     @Autowired
     public SecurityConfiguration(ContractorsUserDetailService contractorsUserDetailService,
-                                 BCryptPasswordEncoder bcryptPasswordEncoder, AuthorizationService authorizationService) {
+                                 BCryptPasswordEncoder bcryptPasswordEncoder,
+                                 AuthorizationService authorizationService,
+                                 AuthenticationService authenticationService,
+                                 EntityParser entityParser) {
         this.contractorsUserDetailService = contractorsUserDetailService;
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
         this.authorizationService = authorizationService;
+        this.authenticationService = authenticationService;
+        this.entityParser = entityParser;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager(),
+                entityParser, authenticationService);
+        authenticationFilter.setFilterProcessesUrl(Endpoints.LOGIN);
+
         http.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
@@ -43,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(Endpoints.ENTITY_PREFIX + "/**").hasAnyAuthority(UserRole.USER.getValue(), UserRole.ADMIN.getValue())
 
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), new ObjectMapper()))
+                .addFilter(authenticationFilter)
                 .addFilter(new AuthorizationFilter(authenticationManager(), authorizationService));
     }
 
