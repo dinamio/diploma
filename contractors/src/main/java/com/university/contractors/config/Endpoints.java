@@ -23,4 +23,7 @@ public interface Endpoints {
 
     String PAYMENT_REASONS = ENTITY_PREFIX + "/payment_reasons";
     String PAYMENT_REASON_BY_ID = PAYMENT_REASONS + ID_PARAMETER;
+
+    String STUDENT_STATUSES = ENTITY_PREFIX + "/student_statuses";
+    String STUDENT_STATUS_BY_ID = STUDENT_STATUSES + ID_PARAMETER;
 }
