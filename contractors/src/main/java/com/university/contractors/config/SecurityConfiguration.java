@@ -1,9 +1,11 @@
 package com.university.contractors.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.university.contractors.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,16 +15,23 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final ContractorsUserDetailService contractorsUserDetailService;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
+    private final JwtAuthorizationFilter authorizationFilter;
+    private final JwtAuthenticationFilter authenticationFilter;
 
     @Autowired
     public SecurityConfiguration(ContractorsUserDetailService contractorsUserDetailService,
-                                 BCryptPasswordEncoder bcryptPasswordEncoder) {
+                                 BCryptPasswordEncoder bcryptPasswordEncoder,
+                                 JwtAuthorizationFilter authorizationFilter,
+                                 JwtAuthenticationFilter authenticationFilter) {
         this.contractorsUserDetailService = contractorsUserDetailService;
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
+        this.authorizationFilter = authorizationFilter;
+        this.authenticationFilter = authenticationFilter;
     }
 
     @Override
@@ -37,13 +46,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(Endpoints.ENTITY_PREFIX + "/**").hasAnyAuthority(UserRole.USER.getValue(), UserRole.ADMIN.getValue())
 
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), new ObjectMapper()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), contractorsUserDetailService));
+                .addFilter(authenticationFilter)
+                .addFilter(authorizationFilter);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(contractorsUserDetailService)
                 .passwordEncoder(bcryptPasswordEncoder);
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
