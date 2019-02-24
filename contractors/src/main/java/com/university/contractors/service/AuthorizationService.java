@@ -36,7 +36,7 @@ public class AuthorizationService {
     }
 
     private String getTokenFromHeaderValue(String headerValue) {
-        if (hasInvalidHeaderValue(headerValue)) {
+        if (Objects.isNull(headerValue)) {
             throw new AuthorizationHeaderNotFoundException();
         }
 
@@ -54,9 +54,5 @@ public class AuthorizationService {
         }
 
         return token;
-    }
-
-    private boolean hasInvalidHeaderValue(String authorizationHeaderValue) {
-        return Objects.isNull(authorizationHeaderValue) || !authorizationHeaderValue.startsWith(TOKEN_PREFIX);
     }
 }
