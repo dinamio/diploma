@@ -12,14 +12,9 @@ public class Country implements IdEntity<Long> {
     @Column(name = "id_country")
     private Long id;
 
-    @Column(name = "country_name_ua")
     private String countryNameUa;
-
-    @Column(name = "country_name_eng")
     private String countryNameEng;
-
-    @Column(name = "country_name_ru")
-    private String getCountryNameRu;
+    private String countryNameRu;
 
     @Override
     public Long getId() {
@@ -47,12 +42,12 @@ public class Country implements IdEntity<Long> {
         this.countryNameEng = countryNameEng;
     }
 
-    public String getGetCountryNameRu() {
-        return getCountryNameRu;
+    public String getCountryNameRu() {
+        return countryNameRu;
     }
 
-    public void setGetCountryNameRu(String getCountryNameRu) {
-        this.getCountryNameRu = getCountryNameRu;
+    public void setCountryNameRu(String countryNameRu) {
+        this.countryNameRu = countryNameRu;
     }
 
     @Override

@@ -80,7 +80,9 @@ public abstract class AbstractCrudControllerTest<I, E extends IdEntity<I>> {
         final E entityToCreate = getArbitraryEntity();
 
         given().contentType(ContentType.JSON)
-                .body(entityToCreate).post(ENDPOINT).then().statusCode(HTTP_UNAUTHORIZED);
+                .body(entityToCreate).post(ENDPOINT)
+                .then()
+                .statusCode(HTTP_UNAUTHORIZED);
 
         final Header header = getAuthorizationHeader(JOHN_USERNAME, JOHN_PASSWORD);
         getPreparedRequestSpecification(header)
