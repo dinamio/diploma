@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class SignUpUserService {
+public class UserService {
 
     private static final UserRole defaultRole = UserRole.USER;
 
@@ -20,8 +20,8 @@ public class SignUpUserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public SignUpUserService(BCryptPasswordEncoder bCryptPasswordEncoder,
-                             UserRepository userRepository) {
+    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,
+                       UserRepository userRepository) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
     }
