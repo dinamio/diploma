@@ -1,6 +1,5 @@
 package com.university.contractors.service;
 
-import com.university.contractors.config.BCryptPasswordEncoder;
 import com.university.contractors.controller.payload.SignUpUser;
 import com.university.contractors.model.User;
 import com.university.contractors.model.UserRole;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private static final UserRole defaultRole = UserRole.USER;
+    private static final UserRole DEFAULT_ROLE = UserRole.USER;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
@@ -43,7 +42,7 @@ public class UserService {
 
         final User user = new User();
         user.setUsername(username);
-        user.setUserRole(defaultRole);
+        user.setUserRole(DEFAULT_ROLE);
 
         final String hashedPassword = bCryptPasswordEncoder.encode(password);
         user.setPasswordHash(hashedPassword);
@@ -54,5 +53,15 @@ public class UserService {
     private boolean usernameIsNotUnique(String username) {
         final Optional<User> userByUsernameOptional = userRepository.findByUsername(username);
         return userByUsernameOptional.isPresent();
+    }
+
+    void saveUserToken(String username, String token) {
+        final Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (!optionalUser.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+        final User user = optionalUser.get();
+        user.setToken(token);
+        userRepository.save(user);
     }
 }
