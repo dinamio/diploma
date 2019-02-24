@@ -1,4 +1,6 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
+
+import com.university.contractors.config.SecurityConstants;
 
 public class AuthorizationInvalidPrefixException extends AbstractAuthorizationException {
 

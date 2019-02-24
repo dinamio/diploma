@@ -1,8 +1,9 @@
 package com.university.contractors.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.university.contractors.model.UserRole;
+import com.university.contractors.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,18 +21,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final ContractorsUserDetailService contractorsUserDetailService;
     private final BCryptPasswordEncoder bcryptPasswordEncoder;
-    private final JwtAuthorizationFilter authorizationFilter;
-    private final JwtAuthenticationFilter authenticationFilter;
+    private final AuthorizationService authorizationService;
 
     @Autowired
     public SecurityConfiguration(ContractorsUserDetailService contractorsUserDetailService,
-                                 BCryptPasswordEncoder bcryptPasswordEncoder,
-                                 JwtAuthorizationFilter authorizationFilter,
-                                 JwtAuthenticationFilter authenticationFilter) {
+                                 BCryptPasswordEncoder bcryptPasswordEncoder, AuthorizationService authorizationService) {
         this.contractorsUserDetailService = contractorsUserDetailService;
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
-        this.authorizationFilter = authorizationFilter;
-        this.authenticationFilter = authenticationFilter;
+        this.authorizationService = authorizationService;
     }
 
     @Override
@@ -46,8 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(Endpoints.ENTITY_PREFIX + "/**").hasAnyAuthority(UserRole.USER.getValue(), UserRole.ADMIN.getValue())
 
                 .and()
-                .addFilter(authenticationFilter)
-                .addFilter(authorizationFilter);
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), new ObjectMapper()))
+                .addFilter(new AuthorizationFilter(authenticationManager(), authorizationService));
     }
 
     @Override
@@ -56,7 +53,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(bcryptPasswordEncoder);
     }
 
-    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();

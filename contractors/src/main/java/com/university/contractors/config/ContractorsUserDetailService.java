@@ -2,11 +2,11 @@ package com.university.contractors.config;
 
 import com.university.contractors.model.User;
 import com.university.contractors.repository.UserRepository;
+import com.university.contractors.service.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class ContractorsUserDetailService implements UserDetailsService {
 
     }
 
-    User loadCustomUserByUsername(String username) {
+    public User loadCustomUserByUsername(String username) {
         final Optional<User> userByUsername = userRepository.findByUsername(username);
 
         if (!userByUsername.isPresent()) {

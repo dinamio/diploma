@@ -1,4 +1,4 @@
-package com.university.contractors.config;
+package com.university.contractors.service;
 
 public class AbstractAuthorizationException extends RuntimeException {
     public AbstractAuthorizationException(String message) {

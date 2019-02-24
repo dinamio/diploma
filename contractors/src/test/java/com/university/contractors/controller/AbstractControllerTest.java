@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.*;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -198,7 +199,7 @@ public abstract class AbstractControllerTest<I, E extends IdEntity<I>> {
     }
 
     private Header getAuthorizationHeader(String token) {
-        return new Header(SecurityConstants.HEADER_NAME, SecurityConstants.TOKEN_PREFIX + token);
+        return new Header(SecurityConstants.HEADER_NAME, SecurityConstants.TOKEN_PREFIX + SPACE + token);
     }
 
     abstract E getArbitraryEntity();
