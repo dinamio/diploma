@@ -18,7 +18,6 @@ public class AuthenticationService {
     public AuthenticationService(TokenBuilder tokenBuilder, UserService userService) {
         this.tokenBuilder = tokenBuilder;
         this.userService = userService;
-        ;
     }
 
     public String processSuccessfulAuthentication(String username) {

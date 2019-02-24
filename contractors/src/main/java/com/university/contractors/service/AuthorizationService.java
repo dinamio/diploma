@@ -7,8 +7,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 import static com.university.contractors.config.SecurityConstants.TOKEN_PREFIX;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
@@ -36,10 +34,6 @@ public class AuthorizationService {
     }
 
     private String getTokenFromHeaderValue(String headerValue) {
-        if (Objects.isNull(headerValue)) {
-            throw new AuthorizationHeaderNotFoundException();
-        }
-
         final String[] prefixAndToken = headerValue.split(SPACE);
 
         if (ObjectUtils.notEqual(prefixAndToken.length, 2)) {
