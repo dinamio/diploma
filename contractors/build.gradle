@@ -23,15 +23,21 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.1.RELEASE'
-    compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.9.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.1.2.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.1.2.RELEASE'
-    
+    compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.0.9.RELEASE'
+
     compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.0.0.jre8'
-
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
+    
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
 
-    testCompile("junit:junit")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.2.RELEASE'
+    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.3.0'
+
 }

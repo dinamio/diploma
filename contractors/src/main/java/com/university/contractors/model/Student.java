@@ -1,37 +1,40 @@
 package com.university.contractors.model;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Student")
-public class Student {
+public class Student implements IdEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "Id_Student")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_student")
     private Long id;
 
-    @Column(name = "StudSurname")
+    @Column(name = "stud_surname")
     private String surname;
 
-    @Column(name = "StudName")
+    @Column(name = "stud_name")
     private String name;
 
-    @Column(name = "StudMiddlename")
+    @Column(name = "stud_middlename")
     private String middleName;
 
-    @Column(name = "dateOfBirth")
+    @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @ManyToOne
-    @JoinColumn(name = "Ref_Country")
+    @JoinColumn(name = "ref_country")
     private Country country;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -74,5 +77,18 @@ public class Student {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equal(id, student.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

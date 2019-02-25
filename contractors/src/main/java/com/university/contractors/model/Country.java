@@ -1,29 +1,27 @@
 package com.university.contractors.model;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Country")
-public class Country {
+public class Country implements IdEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_country")
     private Long id;
 
-    @Column(name = "Country_NameUa")
     private String countryNameUa;
-
-    @Column(name = "Country_NameEng")
     private String countryNameEng;
+    private String countryNameRu;
 
-    @Column(name = "Country_NameRu")
-    private String getCountryNameRu;
-
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -44,11 +42,24 @@ public class Country {
         this.countryNameEng = countryNameEng;
     }
 
-    public String getGetCountryNameRu() {
-        return getCountryNameRu;
+    public String getCountryNameRu() {
+        return countryNameRu;
     }
 
-    public void setGetCountryNameRu(String getCountryNameRu) {
-        this.getCountryNameRu = getCountryNameRu;
+    public void setCountryNameRu(String countryNameRu) {
+        this.countryNameRu = countryNameRu;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Country country = (Country) o;
+        return Objects.equal(id, country.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
