@@ -1,5 +1,6 @@
 package com.university.contractors.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Objects;
 
 import javax.persistence.*;
@@ -14,7 +15,11 @@ public class Order implements IdEntity<Long> {
     private Long id;
 
     private String orderNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date orderDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date relatedDate;
     private String note;
 

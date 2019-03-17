@@ -1,5 +1,6 @@
 package com.university.contractors.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Objects;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class Student implements IdEntity<Long> {
     private String middleName;
 
     @Column(name = "date_of_birth")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date dateOfBirth;
 
     @ManyToOne

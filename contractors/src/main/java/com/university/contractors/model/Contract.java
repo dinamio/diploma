@@ -1,5 +1,6 @@
 package com.university.contractors.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Objects;
 
 import javax.persistence.*;
@@ -20,6 +21,8 @@ public class Contract implements IdEntity<Long> {
     @ManyToOne
     @JoinColumn(name = "ref_contract_type")
     private ContractType contractType;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date contractDate;
     private Float contractValue;
     private String contractNumber;
@@ -49,7 +52,11 @@ public class Contract implements IdEntity<Long> {
     private ArrivalLine arrivalLine;
 
     private String payer;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date dateIn;
+
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date planDateOut;
     private Integer course;
 
