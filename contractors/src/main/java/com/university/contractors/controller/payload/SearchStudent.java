@@ -133,7 +133,4 @@ public class SearchStudent {
         this.educationLanguage = educationLanguage;
     }
 
-    public enum Nationality {
-        UKRAINIAN, FOREIGN
-    }
 }
