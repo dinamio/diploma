@@ -2,16 +2,22 @@ package com.university.contractors.config;
 
 public interface Endpoints {
 
+    // Prefixes
     String API_PREFIX = "/api";
     String API_VERSION_PREFIX = "/v1";
     String ENDPOINTS_PREFIX = API_PREFIX + API_VERSION_PREFIX;
 
-    String LOGIN = ENDPOINTS_PREFIX + "/login";
-    String SIGN_UP = ENDPOINTS_PREFIX + "/signUp";
-
     String ENTITY_PREFIX = ENDPOINTS_PREFIX + "/entity";
     String ID_PARAMETER = "/{id}";
 
+    // Login/SignUp
+    String LOGIN = ENDPOINTS_PREFIX + "/login";
+    String SIGN_UP = ENDPOINTS_PREFIX + "/signUp";
+
+    // Search
+    String SEARCH = ENDPOINTS_PREFIX + "/search";
+
+    // CRUD entities
     String STUDENTS = ENTITY_PREFIX + "/students";
     String STUDENT_BY_ID = STUDENTS + ID_PARAMETER;
 
