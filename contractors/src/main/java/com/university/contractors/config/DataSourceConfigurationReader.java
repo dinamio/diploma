@@ -85,7 +85,7 @@ public class DataSourceConfigurationReader {
 
             LOGGER.info("Datasource configuration was read from external file: " + datasourcePropertiesPath);
         } catch (IOException e) {
-            LOGGER.error("External datasource configuration file was no found in path: '" + datasourcePropertiesPath + "'", e);
+            LOGGER.warn("External datasource configuration file was no found in path: '" + datasourcePropertiesPath + "'");
         }
     }
 
