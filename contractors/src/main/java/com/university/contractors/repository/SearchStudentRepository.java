@@ -44,6 +44,9 @@ public class SearchStudentRepository {
     private List<Predicate> getListOfPredicates(SearchStudent searchStudent, CriteriaBuilder criteriaBuilder, Root<Contract> contractRoot, CriteriaQuery<SearchStudentResult> criteria) {
         final List<Predicate> predicateList = Lists.newArrayList();
 
+        predicateList.add(criteriaBuilder.equal(contractRoot.get("isBudget"), Boolean.FALSE));
+        predicateList.add(criteriaBuilder.equal(contractRoot.get("isActive"), Boolean.TRUE));
+
         if (Objects.nonNull(searchStudent.getSurname())) {
             predicateList.add(criteriaBuilder.equal(contractRoot.get("student").get("surname"),
                     searchStudent.getSurname()));
