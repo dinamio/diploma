@@ -1,7 +1,7 @@
 package com.university.contractors.controller;
 
-import com.university.contractors.Application;
 import com.university.contractors.config.Endpoints;
+import com.university.contractors.config.TestBase;
 import com.university.contractors.controller.payload.LoginUser;
 import com.university.contractors.controller.payload.LoginUserBuilder;
 import com.university.contractors.controller.payload.SignUpUser;
@@ -11,10 +11,7 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
 
@@ -22,9 +19,7 @@ import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SingUpControllerTest {
+public class SingUpControllerTest extends TestBase {
 
     private static final String PREFIX_USERNAME_TO_REGISTER = "john";
     private static final String PASSWORD_TO_REGISTER = "strongPassword";

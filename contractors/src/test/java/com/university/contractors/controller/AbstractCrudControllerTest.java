@@ -1,8 +1,8 @@
 package com.university.contractors.controller;
 
-import com.university.contractors.Application;
 import com.university.contractors.config.Endpoints;
 import com.university.contractors.config.SecurityConstants;
+import com.university.contractors.config.TestBase;
 import com.university.contractors.controller.payload.LoginUser;
 import com.university.contractors.controller.payload.LoginUserBuilder;
 import com.university.contractors.controller.payload.SignUpUser;
@@ -15,10 +15,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Set;
 import java.util.UUID;
@@ -29,9 +26,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class AbstractCrudControllerTest<I, E extends IdEntity<I>> {
+public abstract class AbstractCrudControllerTest<I, E extends IdEntity<I>> extends TestBase {
 
     private final String JOHN_USERNAME = "john" + UUID.randomUUID();
     private final String JOHN_PASSWORD = "strongPassword";

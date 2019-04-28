@@ -1,7 +1,9 @@
 package com.university.contractors.config;
 
 import com.university.contractors.service.AuthorizationService;
+import com.university.contractors.service.InvalidTokenException;
 import com.university.contractors.service.MalformedTokenException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,10 +30,12 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             doFilterImp(request, response, chain);
-        } catch (UsernameNotFoundException exception) {
+        } catch (UsernameNotFoundException | ExpiredJwtException | InvalidTokenException exception) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            writeResponseBody(response, exception.getMessage());
         } catch (MalformedTokenException exception) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            writeResponseBody(response, exception.getMessage());
         }
     }
 
@@ -49,5 +53,11 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 authorizationService.getAuthenticationToken(authorizationHeaderValue);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+    }
+
+    private void writeResponseBody(HttpServletResponse response, String body) throws IOException {
+        response.getWriter().write(body);
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 }
